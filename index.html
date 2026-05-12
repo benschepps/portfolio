@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ben Schepps</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,300;0,500;0,700;0,900;1,400&family=DM+Mono:ital,wght@0,300;0,400;1,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:      #080C10;
+  --surface: #0D1219;
+  --panel:   #111820;
+  --border:  #1A2535;
+  --border2: #243040;
+  --red:     #E8351A;
+  --amber:   #F5A623;
+  --cyan:    #00D4FF;
+  --green:   #00E676;
+  --white:   #F0F4F8;
+  --mid:     #6B8099;
+  --dim:     #2E3E52;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Mono', monospace;
+  background: var(--bg);
+  color: var(--white);
+  overflow-x: hidden;
+}
+
+/* ── TICKER ── */
+.ticker-wrap {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 600;
+  background: var(--red);
+  height: 26px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+.ticker-label {
+  background: var(--bg);
+  color: var(--red);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  padding: 0 14px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+.ticker-track {
+  display: flex;
+  animation: ticker 45s linear infinite;
+  white-space: nowrap;
+}
+.ticker-item {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: rgba(0,0,0,0.75);
+  padding: 0 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.ticker-sep { width: 4px; height: 4px; background: rgba(0,0,0,0.3); border-radius: 50%; }
+@keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+/* ── NAV ── */
+nav {
+  position: fixed;
+  top: 26px; left: 0; right: 0;
+  z-index: 500;
+  background: rgba(8,12,16,0.95);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  height: 50px;
+}
+.nav-left { display: flex; align-items: center; gap: 1.25rem; }
+.nav-live {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+  color: var(--red);
+}
+.live-dot {
+  width: 6px; height: 6px;
+  background: var(--red); border-radius: 50%;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.35; transform:scale(0.7); } }
+.nav-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px; font-weight: 700; letter-spacing: 0.04em;
+  color: var(--white);
+}
+.nav-links { display: flex; gap: 2rem; list-style: none; }
+.nav-links a {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--mid); text-decoration: none; transition: color 0.15s;
+}
+.nav-links a:hover { color: var(--cyan); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  padding-top: 76px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  border-bottom: 1px solid var(--border);
+}
+.hero-main {
+  padding: 4rem 3rem 4rem 2.5rem;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+.hero-main::before {
+  content: 'BS';
+  position: absolute;
+  bottom: -0.2em; left: -0.04em;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 35vw; font-weight: 900;
+  color: rgba(255,255,255,0.016);
+  line-height: 1; pointer-events: none;
+  letter-spacing: -0.04em;
+}
+.hero-top { position: relative; z-index: 2; }
+.hero-chyron {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 2rem;
+  opacity: 0; animation: fadeUp 0.6s ease 0.2s forwards;
+}
+.chyron-bar { width: 3px; height: 14px; background: var(--red); }
+.chyron-text {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 700;
+  letter-spacing: 0.2em; color: var(--red); text-transform: uppercase;
+}
+.hero-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(5rem, 10vw, 9.5rem);
+  font-weight: 900; line-height: 0.88;
+  letter-spacing: -0.02em; text-transform: uppercase;
+  color: var(--white); margin-bottom: 1.5rem;
+  opacity: 0; animation: fadeUp 0.6s ease 0.35s forwards;
+}
+.hero-name em { color: var(--red); font-style: normal; }
+.hero-role {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 500;
+  letter-spacing: 0.2em; color: var(--mid); text-transform: uppercase;
+  opacity: 0; animation: fadeUp 0.6s ease 0.5s forwards;
+}
+.hero-bottom {
+  position: relative; z-index: 2;
+  border-top: 1px solid var(--border);
+  padding-top: 2rem;
+  opacity: 0; animation: fadeUp 0.6s ease 0.7s forwards;
+}
+.hero-tagline {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic; font-size: 1.25rem;
+  color: rgba(240,244,248,0.45); line-height: 1.65;
+  max-width: 480px; margin-bottom: 1.5rem;
+}
+.hero-open-to {
+  display: flex; flex-wrap: wrap; gap: 6px;
+}
+.ot-tag {
+  font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase;
+  border: 1px solid var(--border2); color: var(--cyan); padding: 4px 10px;
+}
+
+/* ── HERO SIDEBAR ── */
+.hero-sidebar { display: flex; flex-direction: column; }
+.sb-block {
+  padding: 1.5rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  opacity: 0;
+}
+.sb-block:nth-child(1) { animation: fadeUp 0.5s ease 0.5s forwards; }
+.sb-block:nth-child(2) { animation: fadeUp 0.5s ease 0.65s forwards; }
+.sb-block:nth-child(3) { animation: fadeUp 0.5s ease 0.8s forwards; }
+.sb-block:nth-child(4) { animation: fadeUp 0.5s ease 0.95s forwards; }
+
+.sb-label {
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.sb-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+
+
+/* Status */
+.status-row {
+  display: flex; align-items: center; gap: 7px;
+  font-size: 10px; color: var(--green); margin-bottom: 0.6rem;
+}
+.status-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+.currently-text {
+  font-size: 11px; color: var(--mid); line-height: 1.7;
+}
+
+/* Stats */
+.stat-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+}
+.stat-cell { background: var(--surface); padding: 1rem; }
+.stat-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 2rem; font-weight: 900;
+  color: var(--cyan); line-height: 1; margin-bottom: 3px;
+}
+.stat-lbl {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--mid);
+}
+
+/* Tools */
+.tools-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.tool-tag {
+  font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase;
+  background: var(--panel); border: 1px solid var(--border2);
+  color: var(--mid); padding: 4px 9px;
+  transition: all 0.15s;
+}
+.tool-tag:hover { color: var(--amber); border-color: var(--amber); }
+
+/* ── CURRENTLY BUILDING BANNER ── */
+.building-banner {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 2.5rem;
+  display: flex; align-items: center; gap: 1rem;
+}
+.building-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; flex-shrink: 0; animation: pulse 1.4s ease-in-out infinite; }
+.building-eyebrow { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--green); flex-shrink: 0; }
+.building-text { font-size: 11px; color: var(--mid); }
+
+/* ── SECTION CHROME ── */
+.section-wrap { border-bottom: 1px solid var(--border); }
+.section-bar {
+  display: flex; align-items: center; gap: 1rem;
+  padding: 0.85rem 2.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+.section-tag {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.12em;
+  background: var(--red); color: var(--bg); padding: 2px 8px;
+}
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--mid);
+}
+.section-h {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.01em;
+  color: var(--white); line-height: 1;
+  padding: 1.75rem 2.5rem 1.5rem;
+}
+
+/* ── RACERSHIP FEATURED ── */
+.rf-wrap {
+  display: grid; grid-template-columns: 1fr 1.4fr;
+  gap: 1px; background: var(--border);
+  margin: 0 2.5rem 1px;
+  border-left: 3px solid var(--red);
+}
+.rf-left {
+  background: var(--panel);
+  padding: 2.5rem 2rem;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  position: relative; overflow: hidden;
+}
+.rf-left::before {
+  content: 'R';
+  position: absolute; bottom: -0.2em; right: -0.05em;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16rem; font-weight: 900;
+  color: rgba(255,255,255,0.025); line-height: 1;
+  pointer-events: none;
+}
+.rf-live {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--green); margin-bottom: 0.85rem;
+}
+.rf-tag { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.4rem; }
+.rf-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 4rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: -0.02em; color: var(--white); line-height: 0.9;
+  margin-bottom: 0.4rem;
+}
+.rf-role { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); margin-bottom: 1.25rem; }
+.rf-summary { font-size: 12px; color: rgba(240,244,248,0.4); line-height: 1.75; margin-bottom: 1.5rem; }
+.rf-visit {
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--cyan); text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: opacity 0.15s;
+}
+.rf-visit:hover { opacity: 0.6; }
+
+.rf-right { background: var(--surface); padding: 2rem; }
+.rf-section-label {
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 1.25rem;
+  display: flex; align-items: center; gap: 10px;
+}
+.rf-section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* Case study */
+.case-study {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  gap: 1px; background: var(--border);
+  margin-bottom: 1.25rem;
+}
+.cs-block { background: var(--panel); padding: 1.25rem; }
+.cs-phase {
+  font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+.cs-phase.before { color: var(--amber); }
+.cs-phase.during { color: var(--cyan); }
+.cs-phase.after  { color: var(--green); }
+.cs-text { font-size: 11px; color: var(--mid); line-height: 1.7; }
+.cs-metric {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.6rem; font-weight: 900;
+  color: var(--green); line-height: 1;
+  margin-top: 0.5rem;
+}
+.cs-metric-label { font-size: 9px; color: var(--dim); letter-spacing: 0.08em; }
+
+/* Work items */
+.rf-items { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.rf-item {
+  background: var(--surface);
+  padding: 0.85rem 1.25rem;
+  display: grid; grid-template-columns: 18px 1fr;
+  gap: 1rem; align-items: start;
+  transition: background 0.15s;
+}
+.rf-item:hover { background: var(--panel); }
+.rf-dash { color: var(--red); font-size: 14px; font-weight: 700; padding-top: 2px; }
+.rf-item-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--white); margin-bottom: 2px;
+}
+.rf-item-desc { font-size: 10.5px; color: var(--mid); line-height: 1.65; }
+
+/* ── PREVIOUS EXPERIENCE ── */
+.prev-label {
+  padding: 0.7rem 2.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 1rem;
+  margin: 0 2.5rem;
+}
+.prev-label span { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--dim); }
+.prev-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.clients-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  margin: 0 2.5rem 2.5rem;
+}
+.client-card {
+  background: var(--surface);
+  padding: 1.75rem;
+  text-decoration: none;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+  transition: background 0.2s;
+}
+.client-card:hover { background: var(--panel); }
+.client-card:hover .cc-link { color: var(--cyan); }
+.cc-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 7rem; font-weight: 900;
+  color: rgba(255,255,255,0.028);
+  position: absolute; top: -0.8rem; right: -0.3rem;
+  line-height: 1; pointer-events: none;
+}
+.cc-bar { width: 20px; height: 2px; margin-bottom: 1.25rem; }
+.cc-tag { font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--dim); margin-bottom: 0.4rem; }
+.cc-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.7rem; font-weight: 900; text-transform: uppercase;
+  letter-spacing: 0.01em; color: var(--white);
+  line-height: 1; margin-bottom: 0.3rem;
+}
+.cc-role { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--mid); margin-bottom: 1rem; }
+.cc-summary { font-size: 11px; color: rgba(240,244,248,0.42); line-height: 1.7; margin-bottom: 1rem; flex: 1; }
+.cc-pills { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 1rem; }
+.cc-pill { font-size: 9px; letter-spacing: 0.07em; text-transform: uppercase; border: 1px solid var(--border2); color: var(--dim); padding: 3px 7px; }
+.cc-link { font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid); transition: color 0.15s; }
+
+/* ── SKILL SET ── */
+.skills-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: var(--border);
+  margin: 0 2.5rem 2.5rem;
+}
+.skill-card {
+  background: var(--surface);
+  padding: 1.5rem;
+  transition: background 0.2s;
+  position: relative;
+}
+.skill-card:hover { background: var(--panel); }
+.skill-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--border2);
+  transition: background 0.2s;
+}
+.skill-card:hover::before { background: var(--cyan); }
+.skill-icon {
+  margin-bottom: 1rem;
+  color: var(--cyan); opacity: 0.65;
+}
+.skill-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 15px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--white); margin-bottom: 0.65rem;
+}
+.skill-desc { font-size: 11px; color: var(--mid); line-height: 1.7; }
+
+/* ── HOW I SHOW UP + APPROACH (merged) ── */
+.combined-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 1px; background: var(--border);
+  margin: 0 2.5rem 2.5rem;
+}
+.combined-card {
+  background: var(--surface);
+  padding: 1.75rem;
+  display: grid; grid-template-columns: 44px 1fr;
+  gap: 1.25rem; align-items: start;
+  transition: background 0.2s;
+}
+.combined-card:hover { background: var(--panel); }
+.combined-num-box {
+  width: 44px; height: 44px;
+  background: var(--panel); border: 1px solid var(--border2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.combined-num {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 16px; font-weight: 900; color: var(--red);
+}
+.combined-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 14px; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--white); margin-bottom: 6px; line-height: 1.2;
+}
+.combined-desc { font-size: 11px; color: var(--mid); line-height: 1.75; }
+/* Approach cards have amber accent */
+.combined-card.approach .combined-num { color: var(--amber); }
+.combined-card.approach .combined-num-box { border-color: rgba(245,166,35,0.2); }
+.combined-card.approach::before {
+  display: none;
+}
+
+/* ── CONTACT ── */
+.contact-wrap {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 4rem; padding: 4rem 2.5rem; align-items: center;
+}
+.contact-headline {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(3rem, 6vw, 5rem); font-weight: 900;
+  text-transform: uppercase; letter-spacing: -0.01em;
+  color: var(--white); line-height: 0.95; margin-bottom: 1.5rem;
+}
+.contact-open {
+  font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--dim); margin-bottom: 0.75rem;
+}
+.contact-roles { display: flex; flex-wrap: wrap; gap: 6px; }
+.contact-role-tag {
+  font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase;
+  border: 1px solid var(--border2); color: var(--cyan); padding: 4px 10px;
+}
+.contact-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); }
+.contact-row {
+  background: var(--surface);
+  padding: 1rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+  text-decoration: none; transition: background 0.15s;
+}
+.contact-row:hover { background: var(--panel); }
+.cl-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--dim); }
+.cl-value { font-size: 12px; color: var(--mid); transition: color 0.15s; }
+.contact-row:hover .cl-value { color: var(--cyan); }
+.cl-arrow { font-size: 11px; color: var(--dim); transition: all 0.15s; }
+.contact-row:hover .cl-arrow { color: var(--cyan); transform: translateX(4px); }
+
+.footer-bar {
+  border-top: 1px solid var(--border);
+  padding: 1rem 2.5rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-sig { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 13px; color: var(--dim); }
+.footer-tag { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--dim); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-sidebar { display: none; }
+  .rf-wrap { grid-template-columns: 1fr; margin: 0 1rem 1px; }
+  .case-study { grid-template-columns: 1fr; }
+  .clients-grid { grid-template-columns: 1fr; margin: 0 1rem 1.5rem; }
+  .skills-grid { grid-template-columns: 1fr 1fr; margin: 0 1rem 1.5rem; }
+  .combined-grid { grid-template-columns: 1fr; margin: 0 1rem 1.5rem; }
+  .contact-wrap { grid-template-columns: 1fr; gap: 2rem; padding: 2rem 1rem; }
+  .section-h { font-size: 2.5rem; padding: 1.25rem 1rem 1rem; }
+  .section-bar { padding: 0.85rem 1rem; }
+  .building-banner { padding: 0.8rem 1rem; }
+  .prev-label { margin: 0 1rem; }
+  nav { padding: 0 1rem; }
+  .nav-links { display: none; }
+  .hero-main { padding: 2rem 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-track" id="ticker"></div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-left">
+    <div class="nav-live"><div class="live-dot"></div>ON AIR</div>
+    <div class="nav-name">Ben Schepps</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#work">Experience</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#approach">Approach</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-main">
+    <div class="hero-top">
+      <div class="hero-chyron">
+        <div class="chyron-bar"></div>
+        <div class="chyron-text">Digital Marketing &nbsp;·&nbsp; Creative Operations &nbsp;·&nbsp; Live Production</div>
+      </div>
+      <h1 class="hero-name">Ben<br><em>Schepps</em></h1>
+      <div class="hero-role">New York, NY &nbsp;·&nbsp; Open to Work</div>
+    </div>
+    <div class="hero-bottom">
+      <p class="hero-tagline">Part storyteller, part systems thinker, part team player. Fully invested in the work.</p>
+      <div class="hero-open-to">
+        <span class="ot-tag">Digital Marketing</span>
+        <span class="ot-tag">Creative Operations</span>
+        <span class="ot-tag">Social Content</span>
+        <span class="ot-tag">Community</span>
+        <span class="ot-tag">Executive Support</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-sidebar">
+
+<div class="sb-block">
+      <div class="sb-label">Currently</div>
+      <div class="status-row"><div class="status-dot"></div>Active</div>
+      <div class="currently-text">Helping launch Racership's motorsports community platform from the ground up — content, outreach, operations, and everything in between.</div>
+    </div>
+
+    <div class="sb-block" style="padding:0">
+      <div class="stat-grid">
+        <div class="stat-cell">
+          <div class="stat-num">4</div>
+          <div class="stat-lbl">Clients</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">3</div>
+          <div class="stat-lbl">Live Events</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">30+</div>
+          <div class="stat-lbl">Posts Built</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-num">1</div>
+          <div class="stat-lbl">Passion</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sb-block">
+      <div class="sb-label">Tools</div>
+      <div class="tools-grid">
+        <span class="tool-tag">Canva</span>
+        <span class="tool-tag">Excel</span>
+        <span class="tool-tag">Google Suite</span>
+        <span class="tool-tag">Adobe Premiere</span>
+        <span class="tool-tag">Substack</span>
+        <span class="tool-tag">Instagram</span>
+        <span class="tool-tag">TikTok</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- BUILDING BANNER -->
+<div class="building-banner reveal">
+  <div class="building-dot"></div>
+  <span class="building-eyebrow">Currently Building</span>
+  <span class="building-text">Helping launch Racership's motorsports community platform from the ground up — content, outreach, operations, and everything in between.</span>
+</div>
+
+<!-- WORK -->
+<div class="section-wrap" id="work">
+  <div class="section-bar reveal">
+    <div class="section-tag">01</div>
+    <div class="section-label">Relevant Experience</div>
+  </div>
+  <div class="section-h reveal">Work & Experience</div>
+
+  <!-- RACERSHIP FEATURED -->
+  <div class="rf-wrap reveal">
+    <div class="rf-left">
+      <div class="rf-live"><div class="live-dot" style="background:var(--green)"></div>Current Role</div>
+      <div class="rf-tag">Motorsports · Community Platform</div>
+      <div class="rf-name">Racership</div>
+      <div class="rf-role">Digital Marketing Coordinator</div>
+      <div class="rf-summary">Helping build a motorsports community platform from the ground up. The work is early-stage, wide-ranging, and never the same week to week.</div>
+      <a href="https://www.racership.com" target="_blank" class="rf-visit">Visit Racership ↗</a>
+    </div>
+
+    <div class="rf-right">
+      <div class="rf-section-label">Mini Case Study — Community Launch</div>
+      <div class="case-study">
+        <div class="cs-block">
+          <div class="cs-phase before">Before</div>
+          <div class="cs-text">Racership had a platform but no content rhythm, no active community, and no systematic way to bring drivers, mentors, and brands onto the app.</div>
+        </div>
+        <div class="cs-block">
+          <div class="cs-phase during">Approach</div>
+          <div class="cs-text">Built a 30-day content calendar with dedicated programming for each audience segment. Developed a 17-day pre-launch campaign to build anticipation before day one.</div>
+        </div>
+        <div class="cs-block">
+          <div class="cs-phase after">Results</div>
+          <div class="cs-text">Onboarded all drivers from the NASCAR Youth Experience, US Auto Club, and Sim Craft onto the platform — expanding reach into racing simulator leagues. Actively building relationships with individual tracks across all three series.</div>
+          <div class="cs-metric">250+</div>
+          <div class="cs-metric-label">Racers Onboarded Across NASCAR Youth Experience, US AC & Sim Craft</div>
+        </div>
+      </div>
+
+      <div class="rf-section-label">What I'm Actually Doing</div>
+      <div class="rf-items">
+        <div class="rf-item">
+          <div class="rf-dash">—</div>
+          <div>
+            <div class="rf-item-title">Short & Long Form Social Content</div>
+            <div class="rf-item-desc">Writing and planning content across multiple formats and audience segments: drivers, mentors, and brands.</div>
+          </div>
+        </div>
+        <div class="rf-item">
+          <div class="rf-dash">—</div>
+          <div>
+            <div class="rf-item-title">Onboard Outreach</div>
+            <div class="rf-item-desc">Directly reaching out to drivers, mentors, and brands to bring them onto the platform. Cold and warm outreach, relationship building, follow-through.</div>
+          </div>
+        </div>
+        <div class="rf-item">
+          <div class="rf-dash">—</div>
+          <div>
+            <div class="rf-item-title">CEO & Founder Admin Support</div>
+            <div class="rf-item-desc">Scheduling, meeting notes, promo codes, and day-to-day coordination. High trust, high ownership environment.</div>
+          </div>
+        </div>
+        <div class="rf-item">
+          <div class="rf-dash">—</div>
+          <div>
+            <div class="rf-item-title">Event Planning & Networking</div>
+            <div class="rf-item-desc">Supporting creative operations including event planning and industry networking to grow the Racership presence in the motorsports world.</div>
+          </div>
+        </div>
+        <div class="rf-item">
+          <div class="rf-dash">—</div>
+          <div>
+            <div class="rf-item-title">Building the Platform From Scratch</div>
+            <div class="rf-item-desc">Establishing the content foundation, community rhythm, and systems that will carry the platform as it scales.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREV EXP -->
+  <div class="prev-label reveal"><span>Previous Experience</span></div>
+  <div class="clients-grid reveal">
+
+    <a class="client-card" href="https://www.canadensis.com" target="_blank">
+      <div class="cc-num">02</div>
+      <div class="cc-bar" style="background:#1A3A5C"></div>
+      <div class="cc-tag">Youth Programs · Summer Camp</div>
+      <div class="cc-name">Camp Canadensis</div>
+      <div class="cc-role">Today Show Producer</div>
+      <div class="cc-summary">Wrote, directed, and produced weekly video programming. Coached on-camera talent and delivered polished content for parent communications under tight turnaround expectations.</div>
+      <div class="cc-pills">
+        <span class="cc-pill">Video Production</span>
+        <span class="cc-pill">Brand Voice</span>
+        <span class="cc-pill">Storytelling</span>
+      </div>
+      <div class="cc-link">Visit Canadensis ↗</div>
+    </a>
+
+    <a class="client-card" href="https://www.onpointdancecompetition.com" target="_blank">
+      <div class="cc-num">03</div>
+      <div class="cc-bar" style="background:#5C1A3A"></div>
+      <div class="cc-tag">Arts · Performing Arts · Live Events</div>
+      <div class="cc-name">On Point Dance</div>
+      <div class="cc-role">Contract Videographer</div>
+      <div class="cc-summary">Produced broadcast-quality multi-day live event coverage. Operated cameras, audio, lighting, and Vimeo livestreams in real time across a competitive performing arts community.</div>
+      <div class="cc-pills">
+        <span class="cc-pill">Live Production</span>
+        <span class="cc-pill">Livestreaming</span>
+        <span class="cc-pill">Event Coverage</span>
+      </div>
+      <div class="cc-link">Visit On Point ↗</div>
+    </a>
+
+    <a class="client-card" href="https://www.loushiff.com" target="_blank">
+      <div class="cc-num">04</div>
+      <div class="cc-bar" style="background:#3A2C1A"></div>
+      <div class="cc-tag">Trades & Services · Operations</div>
+      <div class="cc-name">Louis Shiffman Electric</div>
+      <div class="cc-role">Dispatch Operator</div>
+      <div class="cc-summary">Managed real-time dispatch and routing for a 10-vehicle fleet. Triaged escalations and implemented process improvements that reduced recurring service issues.</div>
+      <div class="cc-pills">
+        <span class="cc-pill">Fleet Dispatch</span>
+        <span class="cc-pill">Real-Time Ops</span>
+        <span class="cc-pill">Process Improvement</span>
+      </div>
+      <div class="cc-link">Visit Loushiff ↗</div>
+    </a>
+
+  </div>
+</div>
+
+<!-- SKILL SET -->
+<div class="section-wrap" id="skills">
+  <div class="section-bar reveal">
+    <div class="section-tag">02</div>
+    <div class="section-label">What I Do</div>
+  </div>
+  <div class="section-h reveal">Skill Set</div>
+  <div class="skills-grid reveal">
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <div class="skill-name">Content Strategy</div>
+      <div class="skill-desc">Full-month content calendars built around how audiences actually behave — what they respond to, when they show up, and why they care. Volume is the last thing I think about.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.5-2 5-2 5s3.5-.5 5-2l8-8-3-3-8 8z"/><path d="M12 8l4-4 4 4-4 4-4-4z"/></svg>
+      </div>
+      <div class="skill-name">Campaign Development</div>
+      <div class="skill-desc">Taking a campaign from the first blank page to launch day. That means phased build-up, audience recruitment, teaser content, and making sure day one has real energy behind it.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="7" r="3"/><circle cx="15" cy="7" r="3"/><path d="M3 21v-2a4 4 0 0 1 4-4h4"/><path d="M13 17l2 2 4-4"/></svg>
+      </div>
+      <div class="skill-name">Community Engagement</div>
+      <div class="skill-desc">The best communities are ones where people feel like participants. I build content systems that give every audience segment something real to do and a reason to come back.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <div class="skill-name">Operations & Systems</div>
+      <div class="skill-desc">Good content falls apart without good systems behind it. I handle the workflows, status tracking, prep checklists, and briefing docs that keep everything on track.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      </div>
+      <div class="skill-name">Copy & Messaging</div>
+      <div class="skill-desc">Copy that sounds like a person wrote it. I have written for motorsports, summer camps, performing arts, and electrical supply — each one with a completely different voice.</div>
+    </div>
+    <div class="skill-card">
+      <div class="skill-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </div>
+      <div class="skill-name">Executive Support</div>
+      <div class="skill-desc">Some of my best experience has come from working directly with founders. You learn fast, take ownership, and there is no room to wait around for someone to tell you what to do next.</div>
+    </div>
+  </div>
+</div>
+
+<!-- APPROACH + HOW I SHOW UP (MERGED) -->
+<div class="section-wrap" id="approach">
+  <div class="section-bar reveal">
+    <div class="section-tag">03</div>
+    <div class="section-label">How I Work & Show Up</div>
+  </div>
+  <div class="section-h reveal">My Approach</div>
+  <div class="combined-grid reveal">
+
+    <div class="combined-card approach">
+      <div class="combined-num-box"><div class="combined-num">01</div></div>
+      <div>
+        <div class="combined-title">Understand First</div>
+        <div class="combined-desc">Before anything gets written or planned, I spend time understanding the brand, the audience, and what the work is actually supposed to accomplish. That foundation changes everything that comes after.</div>
+      </div>
+    </div>
+    <div class="combined-card approach">
+      <div class="combined-num-box"><div class="combined-num">02</div></div>
+      <div>
+        <div class="combined-title">System Over Post</div>
+        <div class="combined-desc">A great post means nothing if the process behind it is chaos. I think in systems: calendars, workflows, prep checklists, approval docs. The infrastructure is part of the job.</div>
+      </div>
+    </div>
+    <div class="combined-card approach">
+      <div class="combined-num-box"><div class="combined-num">03</div></div>
+      <div>
+        <div class="combined-title">Pull People In</div>
+        <div class="combined-desc">Content that gets scrolled past is just noise. I am most interested in work that pulls people in and gives them something to respond to, share, or be part of.</div>
+      </div>
+    </div>
+    <div class="combined-card approach">
+      <div class="combined-num-box"><div class="combined-num">04</div></div>
+      <div>
+        <div class="combined-title">Own It Fully</div>
+        <div class="combined-desc">I take ownership. That means flagging problems before they become crises, raising my hand when something could be better, and delivering the work without someone having to follow up.</div>
+      </div>
+    </div>
+    <div class="combined-card">
+      <div class="combined-num-box"><div class="combined-num">05</div></div>
+      <div>
+        <div class="combined-title">Live Environments Are My Best Work</div>
+        <div class="combined-desc">Multi-day live production taught me something no classroom could: how to stay calm when things go sideways, communicate clearly under pressure, and make quick decisions without freezing.</div>
+      </div>
+    </div>
+    <div class="combined-card">
+      <div class="combined-num-box"><div class="combined-num">06</div></div>
+      <div>
+        <div class="combined-title">I Show Up for the Team</div>
+        <div class="combined-desc">My jobs have looked pretty different on the surface. The through-line has always been the same: figure out what the team needs, stay flexible, and treat the people around you well.</div>
+      </div>
+    </div>
+    <div class="combined-card">
+      <div class="combined-num-box"><div class="combined-num">07</div></div>
+      <div>
+        <div class="combined-title">I Connect With a Lot of Different People</div>
+        <div class="combined-desc">Kids, parents, athletes, executives, creative teams, field crews. My work has put me in front of a lot of different people and I have learned to adapt quickly. The variety is one of my favorite parts.</div>
+      </div>
+    </div>
+    <div class="combined-card">
+      <div class="combined-num-box"><div class="combined-num">08</div></div>
+      <div>
+        <div class="combined-title">I Pay Attention to Who Is Not in the Room</div>
+        <div class="combined-desc">A space only works when the people inside it feel like they genuinely belong. I pay attention to who is on the edges and how to bring them in. That takes intentional thought at every level.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact">
+  <div class="contact-wrap reveal">
+    <div>
+      <div class="contact-headline">Thank<br>You For<br>Your Time.</div>
+      <div class="contact-open">Open To</div>
+      <div class="contact-roles">
+        <span class="contact-role-tag">Digital Marketing</span>
+        <span class="contact-role-tag">Creative Ops</span>
+        <span class="contact-role-tag">Social Content</span>
+        <span class="contact-role-tag">Community</span>
+        <span class="contact-role-tag">Exec Support</span>
+      </div>
+    </div>
+    <div class="contact-list">
+      <a class="contact-row" href="mailto:benschepps@yahoo.com">
+        <span class="cl-label">Email</span>
+        <span class="cl-value">benschepps@yahoo.com</span>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-row" href="tel:5164348148">
+        <span class="cl-label">Phone</span>
+        <span class="cl-value">516-434-8148</span>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <a class="contact-row" href="https://www.linkedin.com/in/benschepps/" target="_blank">
+        <span class="cl-label">LinkedIn</span>
+        <span class="cl-value">linkedin.com/in/benschepps</span>
+        <span class="cl-arrow">↗</span>
+      </a>
+      <div class="contact-row">
+        <span class="cl-label">Location</span>
+        <span class="cl-value">New York, NY</span>
+        <span class="cl-arrow"></span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bar">
+    <div class="footer-sig">Ben Schepps</div>
+    <div class="footer-tag">Digital Marketing · Creative Operations</div>
+  </div>
+</div>
+
+<script>
+// Ticker
+const items = [
+  "Currently: Building Racership's community platform from the ground up",
+  "From live events to content strategy · I've done both",
+  "Short form. Long form. All in.",
+  "B.A. Cinema Production · University of Colorado Boulder",
+  "Outreach · Strategy · Operations · All in one week",
+  "Building motorsports communities · One post at a time",
+  "New York, NY · Open to Work",
+  "4 clients · 3 live events · 1 passion",
+  "Part storyteller · Part systems thinker · Fully invested in the work",
+];
+const track = document.getElementById('ticker');
+const full = [...items, ...items].map(t =>
+  `<span class="ticker-item">${t}<span class="ticker-sep"></span></span>`
+).join('');
+track.innerHTML = full;
+
+// Scroll reveal
+const reveals = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 60);
+      obs.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.07 });
+reveals.forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
